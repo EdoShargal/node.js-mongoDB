@@ -69,6 +69,7 @@ router.post('/', (req, res, next) => {
 
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId;
+    console.log()
     Product.findById(id)
         .exec()
         .then(doc => {
@@ -99,6 +100,7 @@ router.get('/:productId', (req, res, next) => {
 router.patch('/:productId', (req, res, next) => {
     const id = req.params.productId
     const updateOps = {}
+    // for sending object[] e.g [ {"propName: <name>, "value": <value> }]
     for (const ops of req.body){
         updateOps[ops.propName] = ops.value
     }
@@ -119,9 +121,15 @@ router.delete('/:productId', (req, res, next) => {
     Product.remove({ _id: id })
         .exec()
         .then(result => {
-            console.log(result)
-            res.status(200).json(result)
-        })
+            res.status(200).json({
+                message: 'Product deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/products',
+                    body: { name: 'String', price: 'Number' }
+                }
+            });
+          })
         .catch(err => {
             console.log(err)
             res.status(500).json({
