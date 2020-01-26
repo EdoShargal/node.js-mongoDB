@@ -17,6 +17,8 @@ mongoose.connect(`mongodb+srv://adminedo:${process.env.MONGO_ATLAS_PW}@node-rest
                 })
 // loging the calling route to console 
 app.use(morgan('dev'))
+
+
 app.use(bodyParser.urlencoded({extended: false})) // extended: false - simple bodies for URL encoded data
 app.use(bodyParser.json())
 

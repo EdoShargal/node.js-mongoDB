@@ -8,6 +8,7 @@ const Product = require('../models/product')
 router.get('/', (req, res, next) => {
     Order.find()
         .select('product quantity _id')
+        .populate('product', 'name')
         .exec()
         .then(docs => {
             res.status(200).json({
@@ -18,12 +19,12 @@ router.get('/', (req, res, next) => {
                         product: doc.product,
                         quantity: doc.quantity,
                         request: {
-                            type: 'GET',
-                            url: 'http://localhost:8000/orders/' + doc._id
+                            type: "GET",
+                            url: "http://localhost:3000/orders/" + doc._id
                         }
-                    }
+                    };
                 })
-            })
+            });
         })
         .catch(err => {
             res.status(500).json({
@@ -71,13 +72,13 @@ router.post("/", (req, res, next) => {
         });
 });
 
-
 router.get('/:orderId', (req, res, next) => {
     const id = req.params.orderId
     Order.findById(id)
+        .populate('product')
         .exec()
         .then(order => {
-            if(!order) {
+            if (!order) {
                 return res.status(404).json({
                     message: "Order not found"
                 })
@@ -106,7 +107,7 @@ router.delete('/:orderId', (req, res, next) => {
                 request: {
                     type: 'POST',
                     url: "http://localhost:8000/orders",
-                    body: {productId: "ID", quantity: "Number"}
+                    body: { productId: "ID", quantity: "Number" }
                 }
             })
         })
@@ -117,6 +118,5 @@ router.delete('/:orderId', (req, res, next) => {
             })
         })
 })
-
 
 module.exports = router
